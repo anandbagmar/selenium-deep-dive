@@ -8,7 +8,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.time.Duration;
 import java.util.function.Function;
@@ -71,9 +73,9 @@ public class WaitsTest {
         driver.findElement(By.id("location"))
               .sendKeys("Bangalore");
 
-        fluentlyWaitUntil(By.xpath("//button[@tabindex='2']")).click();
+        fluentlyWaitUntil(By.xpath("//button[@tabindex='2']"), 2).click();
 
-        WebElement numberOfRestaurantsElement = fluentlyWaitUntil(By.xpath("//div[@id='all_restaurants']//div[contains(text(), ' restaurants')]"));
+        WebElement numberOfRestaurantsElement = fluentlyWaitUntil(By.xpath("//div[@id='all_restaurants']//div[contains(text(), ' restaurants')]"), 5);
         String numberOfRestaurantsFound = numberOfRestaurantsElement.getText();
         System.out.println(numberOfRestaurantsFound);
         int numberOfRestaurants = Integer.parseInt(numberOfRestaurantsFound.split(" ")[0]);
@@ -82,8 +84,8 @@ public class WaitsTest {
                                        .isGreaterThan(500);
     }
 
-    private WebElement fluentlyWaitUntil(By elementLocator) {
-        Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(10))
+    private WebElement fluentlyWaitUntil(By elementLocator, long maxDuration) {
+        Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(maxDuration))
                                                                 .pollingEvery(Duration.ofMillis(500))
                                                                 .ignoring(org.openqa.selenium.NoSuchElementException.class);
         WebElement element = wait.until(new Function<WebDriver, WebElement>() {
